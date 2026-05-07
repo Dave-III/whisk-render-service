@@ -1,13 +1,18 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
+from app.services.cleanup.cleanup import (
+    cleanup_old_files
+)
+from app.services.media.resolver import (
+    resolve_media_input
+)
 from app.services.youtube.uploader import upload_video
-from app.services.medal.downloader import download_medal_clip
 from app.services.rendering.renderer import (
     render_side_by_side,
     OUTPUT_DIR
 )
-from app.services.uploads.saver import save_upload_file
+
 
 app = FastAPI(
     title="Whisk Render Service",
@@ -40,6 +45,7 @@ async def render_video(
     clip1_url: str | None = Form(None),
     clip2_url: str | None = Form(None)
 ):
+    cleanup_old_files()
 
     allowed_types = ["video/mp4"]
 
@@ -69,37 +75,15 @@ async def render_video(
             detail="clip2 upload or clip2_url is required"
         )
 
-    if clip1:
+    clip1_path = resolve_media_input(
+        clip1,
+        clip1_url
+)
 
-        if clip1.content_type not in allowed_types:
-            raise HTTPException(
-                status_code=400,
-                detail="clip1 must be an MP4 file"
-            )
-
-        clip1_path = save_upload_file(clip1)
-
-    else:
-        clip1_path = download_medal_clip(
-            clip1_url
-        )
-
-
-    if clip2:
-
-        if clip2.content_type not in allowed_types:
-            raise HTTPException(
-                status_code=400,
-                detail="clip2 must be an MP4 file"
-            )
-
-        clip2_path = save_upload_file(clip2)
-
-    else:
-        clip2_path = download_medal_clip(
-            clip2_url
-        )
-
+    clip2_path = resolve_media_input(
+        clip2,
+        clip2_url
+    )
     try:
 
         output_path = render_side_by_side(
