@@ -1,20 +1,13 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from pathlib import Path
-import shutil
-import uuid
-import subprocess
+from app.services.rendering.renderer import render_side_by_side
+from app.services.uploads.saver import save_upload_file
 
 app = FastAPI(
     title="Whisk Render Service",
     version="0.1.0"
 )
-
-UPLOAD_DIR = Path("uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
-
-OUTPUT_DIR = Path("outputs")
-OUTPUT_DIR.mkdir(exist_ok=True)
 
 @app.get("/")
 def root():
@@ -48,46 +41,18 @@ async def render_video(
             status_code=400,
             detail="clip2 must be an MP4 file"
         )
+    clip1_path = save_upload_file(clip1)
+    clip2_path = save_upload_file(clip2)
 
-    clip1_filename = f"{uuid.uuid4()}_{clip1.filename}"
-    clip2_filename = f"{uuid.uuid4()}_{clip2.filename}"
-
-    clip1_path = UPLOAD_DIR / clip1_filename
-    clip2_path = UPLOAD_DIR / clip2_filename
-
-    with clip1_path.open("wb") as buffer:
-        shutil.copyfileobj(clip1.file, buffer)
-
-    with clip2_path.open("wb") as buffer:
-        shutil.copyfileobj(clip2.file, buffer)
-
-    output_filename = f"{uuid.uuid4()}.mp4"
-    output_path = OUTPUT_DIR / output_filename
-
-    ffmpeg_command = [
-        "ffmpeg",
-        "-y",
-        "-i", str(clip1_path),
-        "-i", str(clip2_path),
-        "-filter_complex",
-        (
-            "[0:v]scale=960:540[left];"
-            "[1:v]scale=960:540[right];"
-            "[left][right]hstack=inputs=2[v]"
-        ),
-        "-map", "[v]",
-        "-c:v", "libx264",
-        "-preset", "fast",
-        "-crf", "23",
-        str(output_path)
-    ]
-
-    subprocess.run(ffmpeg_command, check=True)
+    output_path = render_side_by_side(
+        clip1_path,
+        clip2_path
+    )
 
     return {
     "message": "Render completed successfully",
     "output_video": str(output_path),
-    "download_url": f"/download/{output_filename}"
+    "download_url": f"/download/{output_path.name}"
     }
 
 @app.get("/download/{filename}")
