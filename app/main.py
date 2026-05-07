@@ -87,6 +87,13 @@ async def render_video(
             output_path
         )
 
+    except ValueError as e:
+
+        raise HTTPException(
+            status_code=400,
+            detail=str(e)
+        )
+
     except Exception as e:
 
         raise HTTPException(
