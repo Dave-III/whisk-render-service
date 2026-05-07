@@ -18,7 +18,7 @@ Client → API → Queue → Renderer → YouTube → Youtube URL
 ## MVP Goals
 
 - [x] Accept two MP4 uploads
-- [ ] Accept Medal.tv clip URLs
+- [x] Accept Medal.tv clip URLs
 - [x] Render side-by-side output
 - [ ] Upload final video to YouTube
 - [ ] Return public/unlisted URL
