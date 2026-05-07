@@ -11,3 +11,9 @@ def root():
         "status": "running",
         "service": "Whisk Render Service"
     }
+
+@app.get("/health")
+def health_check():
+    return {
+        "healthy": True
+    }
