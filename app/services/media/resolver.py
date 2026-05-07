@@ -1,15 +1,12 @@
 from pathlib import Path
 from fastapi import UploadFile
-
-MAX_FILE_SIZE = 200 * 1024 * 1024
-
 from app.services.uploads.saver import (
     save_upload_file
 )
-
 from app.services.medal.downloader import (
     download_medal_clip
 )
+MAX_FILE_SIZE = 200 * 1024 * 1024
 
 def validate_upload_file(
     upload_file: UploadFile
