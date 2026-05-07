@@ -25,4 +25,6 @@ Client → API → Queue → Renderer → YouTube → Youtube URL
 - [x] Modular rendering service
 - [x] Upload final video to YouTube
 - [x] Return public/unlisted URL
+
+## Future Projects
 - [ ] Docker deployment

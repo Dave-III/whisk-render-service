@@ -100,15 +100,23 @@ async def render_video(
             clip2_url
         )
 
+    try:
 
-    output_path = render_side_by_side(
-        clip1_path,
-        clip2_path
-    )
+        output_path = render_side_by_side(
+            clip1_path,
+            clip2_path
+        )
 
-    youtube_url = upload_video(
-        output_path
-    )
+        youtube_url = upload_video(
+            output_path
+        )
+
+    except Exception as e:
+
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
 
     return {
         "message": "Render completed successfully",

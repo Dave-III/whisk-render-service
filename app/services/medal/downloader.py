@@ -19,6 +19,20 @@ def download_medal_clip(url: str) -> Path:
         url
     ]
 
-    subprocess.run(command, check=True)
+    try:
+        subprocess.run(
+            command,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+
+    except subprocess.CalledProcessError as e:
+
+        print(e.stderr)
+
+        raise RuntimeError(
+            f"yt-dlp download failed:\n{e.stderr}"
+        )
 
     return output_path

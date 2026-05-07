@@ -33,12 +33,24 @@ def render_side_by_side(
         "-preset", "fast",
         "-crf", "23",
         "-shortest",
+        "-movflags", "+faststart",
         str(output_path)
     ]
 
-    subprocess.run(
-        ffmpeg_command,
-        check=True
-    )
+    try:
+        subprocess.run(
+            ffmpeg_command,
+            check=True,
+            capture_output=True,
+            text=True
+        )
+
+    except subprocess.CalledProcessError as e:
+
+        print(e.stderr)
+
+        raise RuntimeError(
+            f"FFmpeg render failed:\n{e.stderr}"
+        )
 
     return output_path
