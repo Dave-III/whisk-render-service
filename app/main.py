@@ -1,6 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.responses import FileResponse
-from pydantic import BaseModel
 from app.services.cleanup.cleanup import (
     cleanup_old_files
 )
@@ -18,10 +17,6 @@ app = FastAPI(
     title="Whisk Render Service",
     version="0.1.0"
 )
-
-class MedalRenderRequest(BaseModel):
-    clip1_url: str
-    clip2_url: str
 
 @app.get("/")
 def root():
@@ -46,9 +41,6 @@ async def render_video(
     clip2_url: str | None = Form(None)
 ):
     cleanup_old_files()
-
-    allowed_types = ["video/mp4"]
-
 
     if clip1 and clip1_url:
         raise HTTPException(

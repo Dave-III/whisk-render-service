@@ -8,12 +8,11 @@ The service supports:
 * Medal.tv clip URLs
 * Automatic video composition
 * YouTube uploads
-* Asynchronous rendering jobs
 * REST API integration
 
 Designed for easy integration into leaderboard and speedrun submission workflows.
 
-Client → API → Queue → Renderer → YouTube → Youtube URL
+Client → API → Renderer → YouTube → URL
 
 ## MVP Goals
 
