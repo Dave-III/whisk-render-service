@@ -23,6 +23,6 @@ Client → API → Queue → Renderer → YouTube → Youtube URL
 - [x] Downloadable Renders
 - [x] Side-by-side composition
 - [x] Modular rendering service
-- [ ] Upload final video to YouTube
-- [ ] Return public/unlisted URL
+- [x] Upload final video to YouTube
+- [x] Return public/unlisted URL
 - [ ] Docker deployment
