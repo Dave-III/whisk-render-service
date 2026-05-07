@@ -1,7 +1,10 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
 from pathlib import Path
-from app.services.rendering.renderer import render_side_by_side
+from app.services.rendering.renderer import (
+    render_side_by_side,
+    OUTPUT_DIR
+)
 from app.services.uploads.saver import save_upload_file
 
 app = FastAPI(
