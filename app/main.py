@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.responses import FileResponse
 from pathlib import Path
 import shutil
 import uuid
@@ -70,8 +71,8 @@ async def render_video(
         "-i", str(clip2_path),
         "-filter_complex",
         (
-            "[0:v]scale=960:1080[left];"
-            "[1:v]scale=960:1080[right];"
+            "[0:v]scale=960:540[left];"
+            "[1:v]scale=960:540[right];"
             "[left][right]hstack=inputs=2[v]"
         ),
         "-map", "[v]",
@@ -84,6 +85,24 @@ async def render_video(
     subprocess.run(ffmpeg_command, check=True)
 
     return {
-        "message": "Render completed successfully",
-        "output_video": str(output_path)
+    "message": "Render completed successfully",
+    "output_video": str(output_path),
+    "download_url": f"/download/{output_filename}"
     }
+
+@app.get("/download/{filename}")
+async def download_video(filename: str):
+
+    file_path = OUTPUT_DIR / filename
+
+    if not file_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail="File not found"
+        )
+
+    return FileResponse(
+        path=file_path,
+        media_type="video/mp4",
+        filename=filename
+    )
