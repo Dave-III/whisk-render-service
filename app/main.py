@@ -15,7 +15,7 @@ from app.services.rendering.renderer import (
 
 app = FastAPI(
     title="Whisk Render Service",
-    version="0.1.0"
+    version="1.0"
 )
 
 @app.get("/")
