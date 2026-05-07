@@ -6,7 +6,7 @@ from app.services.uploads.saver import (
 from app.services.medal.downloader import (
     download_medal_clip
 )
-MAX_FILE_SIZE = 200 * 1024 * 1024
+MAX_FILE_SIZE = 200 * 1024 * 1024 # 200MB
 
 def validate_upload_file(
     upload_file: UploadFile
