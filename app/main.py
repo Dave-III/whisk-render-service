@@ -2,6 +2,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from pathlib import Path
 import shutil
 import uuid
+import subprocess
 
 app = FastAPI(
     title="Whisk Render Service",
@@ -10,6 +11,9 @@ app = FastAPI(
 
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+OUTPUT_DIR = Path("outputs")
+OUTPUT_DIR.mkdir(exist_ok=True)
 
 @app.get("/")
 def root():
@@ -56,8 +60,30 @@ async def render_video(
     with clip2_path.open("wb") as buffer:
         shutil.copyfileobj(clip2.file, buffer)
 
+    output_filename = f"{uuid.uuid4()}.mp4"
+    output_path = OUTPUT_DIR / output_filename
+
+    ffmpeg_command = [
+        "ffmpeg",
+        "-y",
+        "-i", str(clip1_path),
+        "-i", str(clip2_path),
+        "-filter_complex",
+        (
+            "[0:v]scale=960:1080[left];"
+            "[1:v]scale=960:1080[right];"
+            "[left][right]hstack=inputs=2[v]"
+        ),
+        "-map", "[v]",
+        "-c:v", "libx264",
+        "-preset", "fast",
+        "-crf", "23",
+        str(output_path)
+    ]
+
+    subprocess.run(ffmpeg_command, check=True)
+
     return {
-        "message": "Files uploaded successfully",
-        "clip1": str(clip1_path),
-        "clip2": str(clip2_path)
+        "message": "Render completed successfully",
+        "output_video": str(output_path)
     }
