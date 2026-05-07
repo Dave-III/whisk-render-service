@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.responses import FileResponse
-from pathlib import Path
+from pydantic import BaseModel
+from app.services.medal.downloader import download_medal_clip
 from app.services.rendering.renderer import (
     render_side_by_side,
     OUTPUT_DIR
@@ -11,6 +12,10 @@ app = FastAPI(
     title="Whisk Render Service",
     version="0.1.0"
 )
+
+class MedalRenderRequest(BaseModel):
+    clip1_url: str
+    clip2_url: str
 
 @app.get("/")
 def root():
@@ -56,6 +61,30 @@ async def render_video(
     "message": "Render completed successfully",
     "output_video": str(output_path),
     "download_url": f"/download/{output_path.name}"
+    }
+
+@app.post("/render-medal")
+async def render_medal_video(
+    request: MedalRenderRequest
+):
+
+    clip1_path = download_medal_clip(
+        request.clip1_url
+    )
+
+    clip2_path = download_medal_clip(
+        request.clip2_url
+    )
+
+    output_path = render_side_by_side(
+        clip1_path,
+        clip2_path
+    )
+
+    return {
+        "message": "Medal render completed successfully",
+        "output_video": str(output_path),
+        "download_url": f"/download/{output_path.name}"
     }
 
 @app.get("/download/{filename}")

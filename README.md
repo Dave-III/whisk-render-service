@@ -20,6 +20,9 @@ Client → API → Queue → Renderer → YouTube → Youtube URL
 - [x] Accept two MP4 uploads
 - [x] Accept Medal.tv clip URLs
 - [x] Render side-by-side output
+- [x] Downloadable Renders
+- [x] Side-by-side composition
+- [x] Modular rendering service
 - [ ] Upload final video to YouTube
 - [ ] Return public/unlisted URL
 - [ ] Docker deployment

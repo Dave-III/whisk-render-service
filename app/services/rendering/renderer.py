@@ -29,8 +29,10 @@ def render_side_by_side(
         "-map", "[v]",
         "-map", "0:a?",
         "-c:v", "libx264",
+        "-c:a", "aac",
         "-preset", "fast",
         "-crf", "23",
+        "-shortest",
         str(output_path)
     ]
 
