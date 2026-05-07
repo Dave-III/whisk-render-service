@@ -9,6 +9,7 @@ __pycache__/
 # YouTube OAuth
 client_secret.json
 token.json
+token.pickle
 
 # Generated media
 uploads/
