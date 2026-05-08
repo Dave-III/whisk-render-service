@@ -1,14 +1,12 @@
-"use client"
-
 import {
   PanelGroup,
   Panel,
   PanelResizeHandle,
 } from "react-resizable-panels"
 
-import Sidebar from "@/components/editor/layout/Sidebar"
-import TimelinePanel from "@/components/editor/layout/TimelinePanel"
-import InspectorPanel from "@/components/editor/layout/InspectorPanel"
+import Sidebar from "./components/Sidebar"
+import Timeline from "./components/Timeline"
+import Inspector from "./components/Inspector"
 
 export default function EditorPage() {
   return (
@@ -22,13 +20,13 @@ export default function EditorPage() {
         <PanelResizeHandle className="w-1 bg-zinc-800" />
 
         <Panel>
-          <TimelinePanel />
+          <Timeline />
         </Panel>
 
         <PanelResizeHandle className="w-1 bg-zinc-800" />
 
         <Panel defaultSize={25}>
-          <InspectorPanel />
+          <Inspector />
         </Panel>
 
       </PanelGroup>
